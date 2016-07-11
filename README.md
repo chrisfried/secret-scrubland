@@ -1,7 +1,7 @@
-# Days Without Destiny
-[dayswithoutdestiny.com](http://dayswithoutdestiny.com/)
+# Secret Scrubland
+[Live on Heroku](https://secret-scrubland-31430.herokuapp.com/)
 
-A slapdash little web app that displays how many days a user has gone without playing Destiny.
+A slapdash little web app that displays a heatmap calendar of how much time a Guardian has spent playing Destiny activities.
 
 Built with Node.js, along with some vanilla JavaScript to power the front end.
 
