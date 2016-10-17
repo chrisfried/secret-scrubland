@@ -161,6 +161,12 @@ var characterCallback = function(results, variables) {
     updateStatus('Fetching activity data for ' + username + ' on ' + platform + '. This could take awhile... Activities loaded: ' + activitiesLoaded);
     httpGetAsync(path, characterCallback, variables);
   }
+  else if (json && json.ErrorCode) {
+    console.error(json);
+    stopSpinner();
+    updateStatus('Encountered a Bungie API Error while retrieving activity data.', true);
+    if (json.Message) updateStatus('Encountered a Bungie API Error while retrieving activity data: ' + json.Message, true);
+  }
   else {
     charactersChecked[variables.characterId] = true;
     var allTrue = true;
@@ -183,7 +189,7 @@ var accountCallback = function(results) {
   try {
     json = JSON.parse(results);
   } catch(e) {
-    console.log(e);
+    console.error(e);
     stopSpinner();
     updateStatus('Error parsing account results for ' + username + ' on ' + platform, true);
   }
@@ -203,6 +209,12 @@ var accountCallback = function(results) {
         httpGetAsync(characterPath, characterCallback, variables);
       }
     });
+  }
+  else if (json && json.ErrorCode) {
+    console.error(json);
+    stopSpinner();
+    updateStatus('Encountered a Bungie API Error while retrieving account data.', true);
+    if (json.Message) updateStatus('Encountered a Bungie API Error while retrieving account data: ' + json.Message, true);
   }
   else {
     stopSpinner();
