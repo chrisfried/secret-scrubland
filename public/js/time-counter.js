@@ -49,7 +49,7 @@ var daysPlayedCallback = function(days, max) {
       .range(d3.range(range).map(function(d) { return "q" + d + "-" + range; }));
 
   var svg = d3.select(".calendar").selectAll("svg")
-      .data(d3.range(2014, 2017))
+      .data(d3.range(2014, 2018))
     .enter().append("svg")
       .attr("width", width)
       .attr("height", height)
@@ -91,10 +91,12 @@ var daysPlayedCallback = function(days, max) {
       });
       
   var destinyDays = new Array();
-  destinyDays['2014-09-09'] = 'Destiny release date';
-  destinyDays['2014-12-09'] = 'The Dark Below release date';
-  destinyDays['2015-05-19'] = 'House of Wolves release date';
-  destinyDays['2015-09-15'] = 'The Taken King release date';
+  destinyDays['2014-09-09'] = 'Destiny';
+  destinyDays['2014-12-09'] = 'The Dark Below';
+  destinyDays['2015-05-19'] = 'House of Wolves';
+  destinyDays['2015-09-15'] = 'The Taken King';
+  destinyDays['2016-04-12'] = 'The April Update';
+  destinyDays['2016-09-20'] = 'Rise of Iron';
       
   rect.filter(function(d) { return d in destinyDays; })
       .attr("class", function(d) { return "day " + color(days[d]) + " destiny-day"})
