@@ -276,3 +276,6 @@ body {
   display: none;
   margin-top: 2em;
 }
+.search {
+  z-index: 20;
+}
