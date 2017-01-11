@@ -1,6 +1,6 @@
-var httpGetAsync = function(theUrl, callback, variables){
+var httpGetAsync = function (theUrl, callback, variables) {
   var xmlHttp = new XMLHttpRequest();
-  xmlHttp.onreadystatechange = function() { 
+  xmlHttp.onreadystatechange = function () {
     if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
       callback(xmlHttp.responseText, variables);
     else if (xmlHttp.readyState == 4) {
@@ -12,11 +12,11 @@ var httpGetAsync = function(theUrl, callback, variables){
   xmlHttp.send(null);
 }
 
-var startSpinner = function(){
+var startSpinner = function () {
   document.getElementById('spinner').style.display = "block";
 }
 
-var stopSpinner = function(){
+var stopSpinner = function () {
   document.getElementById('spinner').style.display = "none";
 }
 
@@ -30,66 +30,71 @@ var charactersChecked = new Array();
 var dayMax = 0;
 var activitiesLoaded = 0;
 
-var daysPlayedCallback = function(days, max) {
+var daysPlayedCallback = function (days, max) {
+  console.log('draw callback started')
+  var svgs = document.getElementsByTagName('svg');
+  for (i = svgs.length - 1; i > -1; i--) {
+    svgs[i].parentNode.removeChild(svgs[i])
+  }
   if (max > 86400) max = 86400;
   var width = 960,
-      height = 136,
-      cellSize = 17; // cell size
+    height = 136,
+    cellSize = 17; // cell size
 
   var format = d3.time.format("%Y-%m-%d");
-  
+
   var range = 11;
   if (pathArray[2] == 'fixed') {
     range = 24;
     max = 86400;
   }
-  
+
   var color = d3.scale.quantize()
-      .domain([0, max])
-      .range(d3.range(range).map(function(d) { return "q" + d + "-" + range; }));
+    .domain([0, max])
+    .range(d3.range(range).map(function (d) { return "q" + d + "-" + range; }));
 
   var svg = d3.select(".calendar").selectAll("svg")
-      .data(d3.range(2014, 2018))
+    .data(d3.range(2014, 2018))
     .enter().append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("class", "RdYlGn")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("class", "RdYlGn")
     .append("g")
-      .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+    .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
 
   svg.append("text")
-      .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
-      .style("text-anchor", "middle")
-      .text(function(d) { return d; });
+    .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+    .style("text-anchor", "middle")
+    .text(function (d) { return d; });
 
   var rect = svg.selectAll(".day")
-      .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+    .data(function (d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
     .enter().append("rect")
-      .attr("class", "day")
-      .attr("width", cellSize)
-      .attr("height", cellSize)
-      .attr("x", function(d) { return d3.time.weekOfYear(d) * cellSize; })
-      .attr("y", function(d) { return d.getDay() * cellSize; })
-      .datum(format);
+    .attr("class", "day")
+    .attr("width", cellSize)
+    .attr("height", cellSize)
+    .attr("x", function (d) { return d3.time.weekOfYear(d) * cellSize; })
+    .attr("y", function (d) { return d.getDay() * cellSize; })
+    .datum(format);
 
   rect.append("title")
-      .text(function(d) { return d; });
+    .text(function (d) { return d; });
 
   svg.selectAll(".month")
-      .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+    .data(function (d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
     .enter().append("path")
-      .attr("class", "month")
-      .attr("d", monthPath);
+    .attr("class", "month")
+    .attr("d", monthPath);
 
-  rect.filter(function(d) { return d in days; })
-      .attr("class", function(d) { return "day " + color(days[d]); })
+  rect.filter(function (d) { return d in days; })
+    .attr("class", function (d) { return "day " + color(days[d]); })
     .select("title")
-      .text(function(d) {
-        var hours = parseInt(days[d]/3600) % 24;
-        var minutes = parseInt(days[d]/60) % 60;
-        return d + ": " + hours + " hours " + minutes + " minutes";
-      });
-      
+    .text(function (d) {
+      var hours = parseInt(days[d] / 3600) % 24;
+      var minutes = parseInt(days[d] / 60) % 60;
+      return d + ": " + hours + " hours " + minutes + " minutes";
+    });
+
   var destinyDays = new Array();
   destinyDays['2014-09-09'] = 'Destiny';
   destinyDays['2014-12-09'] = 'The Dark Below';
@@ -97,39 +102,39 @@ var daysPlayedCallback = function(days, max) {
   destinyDays['2015-09-15'] = 'The Taken King';
   destinyDays['2016-04-12'] = 'The April Update';
   destinyDays['2016-09-20'] = 'Rise of Iron';
-      
-  rect.filter(function(d) { return d in destinyDays; })
-      .attr("class", function(d) { return "day " + color(days[d]) + " destiny-day"})
+
+  rect.filter(function (d) { return d in destinyDays; })
+    .attr("class", function (d) { return "day " + color(days[d]) + " destiny-day" })
     .select("title")
-      .text(function(d) {
-        if (days[d]) {
-          var hours = parseInt(days[d]/3600) % 24;
-          var minutes = parseInt(days[d]/60) % 60;
-          return d + ": " + destinyDays[d] + " - " + hours + " hours " + minutes + " minutes";
-        }
-        else {
-          return d + ": " + destinyDays[d];
-        }
-      });
+    .text(function (d) {
+      if (days[d]) {
+        var hours = parseInt(days[d] / 3600) % 24;
+        var minutes = parseInt(days[d] / 60) % 60;
+        return d + ": " + destinyDays[d] + " - " + hours + " hours " + minutes + " minutes";
+      }
+      else {
+        return d + ": " + destinyDays[d];
+      }
+    });
 
   function monthPath(t0) {
     var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
-        d0 = t0.getDay(), w0 = d3.time.weekOfYear(t0),
-        d1 = t1.getDay(), w1 = d3.time.weekOfYear(t1);
+      d0 = t0.getDay(), w0 = d3.time.weekOfYear(t0),
+      d1 = t1.getDay(), w1 = d3.time.weekOfYear(t1);
     return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
-        + "H" + w0 * cellSize + "V" + 7 * cellSize
-        + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
-        + "H" + (w1 + 1) * cellSize + "V" + 0
-        + "H" + (w0 + 1) * cellSize + "Z";
+      + "H" + w0 * cellSize + "V" + 7 * cellSize
+      + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+      + "H" + (w1 + 1) * cellSize + "V" + 0
+      + "H" + (w0 + 1) * cellSize + "Z";
   }
 }
 
-var characterCallback = function(results, variables) {
+var characterCallback = function (results, variables) {
   console.log('character callback started')
   var json;
   try {
     json = JSON.parse(results);
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     stopSpinner();
     updateStatus('Error parsing character results for ' + username + ' on ' + platform, true);
@@ -138,7 +143,7 @@ var characterCallback = function(results, variables) {
     activitiesLoaded += json.Response.data.activities.length;
     console.log('json exists')
     updateStatus('Compiling activity data for ' + username + ' on ' + platform + '. This could take awhile...');
-    json.Response.data.activities.forEach(function(activity) {
+    json.Response.data.activities.forEach(function (activity) {
       console.log('activity loop')
       if (activity && activity.period && activity.values.activityDurationSeconds && activity.values.activityDurationSeconds.basic && activity.values.activityDurationSeconds.basic.value) {
         var dateObject = new Date(activity.period);
@@ -146,7 +151,7 @@ var characterCallback = function(results, variables) {
         if (month < 10) month = "0" + month;
         var day = dateObject.getDate();
         if (day < 10) day = "0" + day;
-        var date = dateObject.getFullYear() + '-' + month + '-' +  day;
+        var date = dateObject.getFullYear() + '-' + month + '-' + day;
         // console.log(date)
         var duration = activity.values.activityDurationSeconds.basic.value;
         if (activity.values.leaveRemainingSeconds && activity.values.leaveRemainingSeconds.basic && activity.values.leaveRemainingSeconds.basic.value) {
@@ -162,6 +167,7 @@ var characterCallback = function(results, variables) {
     var path = variables.basePath + '&page=' + variables.page;
     updateStatus('Fetching activity data for ' + username + ' on ' + platform + '. This could take awhile... Activities loaded: ' + activitiesLoaded);
     httpGetAsync(path, characterCallback, variables);
+    daysPlayedCallback(daysPlayed, dayMax);
   }
   else {
     charactersChecked[variables.characterId] = true;
@@ -179,21 +185,21 @@ var characterCallback = function(results, variables) {
   }
 }
 
-var accountCallback = function(results) {
+var accountCallback = function (results) {
   console.log('account callback started')
   var json;
   try {
     json = JSON.parse(results);
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     stopSpinner();
     updateStatus('Error parsing account results for ' + username + ' on ' + platform, true);
   }
   if (json && json.Response && json.Response.data && json.Response.data.membershipType && json.Response.data.membershipId && json.Response.data.characters && json.Response.data.characters.length) {
-    json.Response.data.characters.forEach(function(character) {
+    json.Response.data.characters.forEach(function (character) {
       charactersChecked[character.characterBase.characterId] = false;
     });
-    json.Response.data.characters.forEach(function(character) {
+    json.Response.data.characters.forEach(function (character) {
       if (character && character.characterBase && character.characterBase.characterId) {
         var characterPath = '/Platform/Destiny/Stats/ActivityHistory/' + json.Response.data.membershipType + '/' + json.Response.data.membershipId + '/' + character.characterBase.characterId + '/?mode=None&count=250';
         var variables = {
@@ -212,18 +218,18 @@ var accountCallback = function(results) {
   }
 }
 
-var searchCallback = function(results) {
+var searchCallback = function (results) {
   console.log('search callback started')
   var json;
   try {
     json = JSON.parse(results);
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     stopSpinner();
     updateStatus('Error parsing search results for ' + username + ' on ' + platform, true);
   }
   if (json && json.Response && json.Response[0] && json.Response[0].displayName) {
-  //  document.getElementById('guardian-name').innerHTML = json.Response[0].displayName;
+    //  document.getElementById('guardian-name').innerHTML = json.Response[0].displayName;
   }
   if (json && json.Response && json.Response[0] && json.Response[0].membershipId) {
     var membershipId = json.Response[0].membershipId;
@@ -239,7 +245,7 @@ var searchCallback = function(results) {
 
 var path = window.location.pathname;
 path = path.slice(1);
-var pathArray = path.split( '/' );
+var pathArray = path.split('/');
 var username = decodeURI(pathArray[1]).trim();
 var searchPath = '/Platform/Destiny/SearchDestinyPlayer/' + pathArray[0] + '/' + username + '/';
 if (pathArray[0] == 2) {
