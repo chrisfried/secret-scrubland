@@ -4,6 +4,7 @@
   "description": "Displays how many days a user has avoided playing Destiny.",
   "main": "app.js",
   "scripts": {
+    "start": "node ./app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Chris Fried",
