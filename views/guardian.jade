@@ -5,15 +5,19 @@ html
     base(href='/')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     link(href='https://fonts.googleapis.com/css?family=Averia+Serif+Libre:400,700' rel='stylesheet' type='text/css')
+    script(src="https://code.jquery.com/jquery-3.2.1.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/js/foundation.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/js/plugins/foundation.reveal.min.js")
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation-flex.min.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css')
     link(rel='stylesheet', href='/public/foundation-icons/foundation-icons.css')
     link(rel='stylesheet', href='/public/css/odometer-theme-train-station.css')
     link(rel='stylesheet', href='/public/css/app.css')
     link(rel='stylesheet' href='/public/css/print.css' media='print')
     include ./partials/analytics.jade
-    
+
   body
-    div(class='row wrapper')  
+    div(class='row wrapper')
       div(class='columns small-12 medium-10 medium-offset-1 large-8 large-offset-2')
         include ./partials/search.jade
       div(class='columns small-12 calendar')

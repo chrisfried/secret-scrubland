@@ -121,7 +121,7 @@ var daysPlayedCallback = function (days, max, daysPerMode) {
   rect.filter(function (d) { return d in days; })
     .attr("class", function (d) { return "day " + color(days[d]); })
     .on('click', function(d) {
-      var text = Object.keys(modes)
+      var texts = Object.keys(modes)
       .filter(function(mode) {
         return daysPerMode[d][mode] !== undefined;
       })
@@ -130,8 +130,10 @@ var daysPlayedCallback = function (days, max, daysPerMode) {
         var hours = parseInt(time / 3600) % 24;
         var minutes = parseInt(time / 60) % 60;
         return modes[mode] + ": " + hours + " hours " + minutes + " minutes";
-      }).join('\n');
-      alert(d + ": \n" + text);
+      });
+      var element = $('<div class="reveal" id=modal-modes-' + d + ' data-reveal><h3>' + d + '</h3><p class="lead">' + texts.map(function(text) { return '<div>' + text + '</div>'}).join('') + '</p><button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button></div>');
+      var modelObj = new Foundation.Reveal(element, {});
+      element.foundation('open');
     })
     .select("title")
     .text(function (d) {
