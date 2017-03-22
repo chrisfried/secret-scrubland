@@ -8,7 +8,7 @@ var httpGetAsync = function (theUrl, callback, variables) {
       updateStatus('Something went wrong...', true)
     }
   }
-  xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+  xmlHttp.open("GET", theUrl, true); // true for asynchronous
   xmlHttp.send(null);
 }
 
@@ -30,7 +30,39 @@ var charactersChecked = new Array();
 var dayMax = 0;
 var activitiesLoaded = 0;
 
-var daysPlayedCallback = function (days, max) {
+var modes = {
+  0: 'None',
+  2: 'Story',
+  3: 'Strike',
+  4: 'Raid',
+  5: 'AllPvP',
+  6: 'Patrol',
+  7: 'AllPvE',
+  8: 'PvPIntroduction',
+  9: 'ThreeVsThree',
+  10: 'Control',
+  11: 'Salvage',
+  12: 'Team',
+  13: 'Rumble',
+  14: 'Nightfall',
+  15: 'Heroic',
+  16: 'AllStrikes',
+  17: 'IronBanner',
+  18: 'AllArena',
+  19: 'Arena',
+  20: 'ArenaChallenge',
+  21: 'TrialsOfOsiris',
+  22: 'Elimination',
+  23: 'Rift',
+  24: 'Mayhem',
+  25: 'ZoneControl',
+  26: 'Racing',
+  27: 'Supremacy',
+  28: 'PrivateMatchesAll'
+};
+var dasysPlayedPerMode = new Array();
+
+var daysPlayedCallback = function (days, max, daysPerMode) {
   console.log('draw callback started')
   var svgs = document.getElementsByTagName('svg');
   for (i = svgs.length - 1; i > -1; i--) {
@@ -88,6 +120,21 @@ var daysPlayedCallback = function (days, max) {
 
   rect.filter(function (d) { return d in days; })
     .attr("class", function (d) { return "day " + color(days[d]); })
+    .on('click', function(d) {
+      var texts = Object.keys(modes)
+      .filter(function(mode) {
+        return daysPerMode[d][mode] !== undefined;
+      })
+      .map(function(mode) {
+        var time = daysPerMode[d][mode];
+        var hours = parseInt(time / 3600) % 24;
+        var minutes = parseInt(time / 60) % 60;
+        return modes[mode] + ": " + hours + " hours " + minutes + " minutes";
+      });
+      var element = $('<div class="reveal" id=modal-modes-' + d + ' data-reveal><h3>' + d + '</h3><p class="lead">' + texts.map(function(text) { return '<div>' + text + '</div>'}).join('') + '</p><button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button></div>');
+      var modelObj = new Foundation.Reveal(element, {});
+      element.foundation('open');
+    })
     .select("title")
     .text(function (d) {
       var hours = parseInt(days[d] / 3600) % 24;
@@ -159,6 +206,9 @@ var characterCallback = function (results, variables) {
         }
         if (!daysPlayed[date]) daysPlayed[date] = 0;
         daysPlayed[date] += duration;
+        if (!dasysPlayedPerMode[date]) dasysPlayedPerMode[date] = {};
+        if (!dasysPlayedPerMode[date][activity.activityDetails.mode]) dasysPlayedPerMode[date][activity.activityDetails.mode] = 0;
+        dasysPlayedPerMode[date][activity.activityDetails.mode] += duration;
         if (daysPlayed[date] > dayMax) dayMax = daysPlayed[date];
         // console.log(daysPlayed)
       }
@@ -167,7 +217,7 @@ var characterCallback = function (results, variables) {
     var path = variables.basePath + '&page=' + variables.page;
     updateStatus('Fetching activity data for ' + username + ' on ' + platform + '. This could take awhile... Activities loaded: ' + activitiesLoaded);
     httpGetAsync(path, characterCallback, variables);
-    daysPlayedCallback(daysPlayed, dayMax);
+    daysPlayedCallback(daysPlayed, dayMax, dasysPlayedPerMode);
   }
   else {
     charactersChecked[variables.characterId] = true;
@@ -180,7 +230,7 @@ var characterCallback = function (results, variables) {
       console.log(dayMax);
       stopSpinner();
       updateStatus('');
-      daysPlayedCallback(daysPlayed, dayMax);
+      daysPlayedCallback(daysPlayed, dayMax, dasysPlayedPerMode);
     }
   }
 }
