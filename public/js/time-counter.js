@@ -259,7 +259,7 @@ var accountCallback = function (results) {
     });
     json.Response.data.characters.forEach(function (character) {
       if (character && character.characterBase && character.characterBase.characterId) {
-        var characterPath = '/Platform/Destiny/Stats/ActivityHistory/' + json.Response.data.membershipType + '/' + json.Response.data.membershipId + '/' + character.characterBase.characterId + '/?mode=None&count=250';
+        var characterPath = '/d1/Platform/Destiny/Stats/ActivityHistory/' + json.Response.data.membershipType + '/' + json.Response.data.membershipId + '/' + character.characterBase.characterId + '/?mode=None&count=250';
         var variables = {
           'basePath': characterPath,
           'page': 0,
@@ -291,7 +291,7 @@ var searchCallback = function (results) {
   }
   if (json && json.Response && json.Response[0] && json.Response[0].membershipId) {
     var membershipId = json.Response[0].membershipId;
-    var accountPath = '/Platform/Destiny/' + pathArray[0] + '/Account/' + membershipId + '/Summary/';
+    var accountPath = '/d1/Platform/Destiny/' + pathArray[0] + '/Account/' + membershipId + '/Summary/';
     updateStatus('Fetching account data for ' + username + ' on ' + platform + '...');
     httpGetAsync(accountPath, accountCallback);
   }
@@ -305,7 +305,7 @@ var path = window.location.pathname;
 path = path.slice(1);
 var pathArray = path.split('/');
 var username = decodeURI(pathArray[1]).trim();
-var searchPath = '/Platform/Destiny/SearchDestinyPlayer/' + pathArray[0] + '/' + username + '/';
+var searchPath = '/d1/Platform/Destiny/SearchDestinyPlayer/' + pathArray[0] + '/' + username + '/';
 if (pathArray[0] == 2) {
   document.getElementById('platformSwitch').checked = true;
 }
